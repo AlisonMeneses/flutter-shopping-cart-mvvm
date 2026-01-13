@@ -16,7 +16,7 @@ class CartServiceImpl implements ICartService {
     // Simulate an error
     return Failure(
       AppError(
-        message: 'Could not remove item from cart',
+        message: 'Could not remove item from cart (Simulated error)',
         type: AppErrorType.server,
       ),
     );
