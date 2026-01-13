@@ -1,4 +1,5 @@
 
+import 'package:dio/dio.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -20,6 +21,10 @@ import '../ui/checkout/checkout_view_model.dart';
 class AppModule {
   static List<SingleChildWidget> providers = [
 
+    Provider(
+      create: (context) => Dio(),
+    ),
+
     ChangeNotifierProvider(
       create: (context) => CartSession(),
     ),
@@ -27,7 +32,9 @@ class AppModule {
 
 
     Provider<IProductService>(
-      create: (context) => ProductServiceImpl(),
+      create: (context) => ProductServiceImpl(
+        dio: context.read(),
+      ),
     ),
 
     Provider<ICartService>(

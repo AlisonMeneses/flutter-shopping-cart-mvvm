@@ -9,7 +9,9 @@ abstract class IProductService {
 }
 
 class ProductServiceImpl extends IProductService {
-  final Dio dio = Dio();
+  final Dio dio;
+
+  ProductServiceImpl({required this.dio});
 
   @override
   Future<Result<List<ProductModel>, AppError>> getProducts() async {
