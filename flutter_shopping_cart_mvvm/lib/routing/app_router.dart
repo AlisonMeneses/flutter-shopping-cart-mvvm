@@ -7,6 +7,8 @@ import '../ui/cart/cart_screen.dart';
 import '../ui/cart/cart_view_model.dart';
 import '../ui/catalog/catalog_screen.dart';
 import '../ui/catalog/products_view_model.dart';
+import '../ui/checkout/checkout_screen.dart';
+import '../ui/checkout/checkout_view_model.dart';
 
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -23,6 +25,14 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (context) => CartScreen(
             cartViewModel: context.read<CartViewModel>(),
+          ),
+          settings: settings,
+        );
+
+      case AppRoutes.checkout:
+        return MaterialPageRoute(
+          builder: (context) => CheckoutScreen(
+            checkoutViewModel: context.read<CheckoutViewModel>(),
           ),
           settings: settings,
         );

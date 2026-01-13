@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../domain/entities/product_entity.dart';
+import '../../routing/routes.dart';
 import '../../sessions/cart_session.dart';
+import '../../utils/app_error.dart';
 import '../../utils/command.dart';
 import '../widgets/summary_widget.dart';
 import 'cart_view_model.dart';
@@ -19,8 +21,31 @@ class CartScreen extends StatefulWidget {
 class _CartScreenState extends State<CartScreen> {
   @override
   void initState() {
+    _setupCheckoutProductsCommandListeners();
     _setupRemoveProductsCommandListeners();
     super.initState();
+  }
+
+  void _setupCheckoutProductsCommandListeners() {
+    widget.cartViewModel.checkoutProductsCmd.onSuccess((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+
+        Navigator.of(
+          context,
+        ).pushNamedAndRemoveUntil(AppRoutes.checkout, (route) => false);
+      });
+    });
+
+    widget.cartViewModel.checkoutProductsCmd.onError((appError) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(appError.message)));
+      });
+    });
   }
 
   void _setupRemoveProductsCommandListeners() {
@@ -144,8 +169,32 @@ class _CartScreenState extends State<CartScreen> {
         children: [
           SummaryWidget(subtotal: viewModel.cartSession.subtotal),
           const SizedBox(height: 16),
+          ValueListenableBuilder(
+            valueListenable: widget.cartViewModel.checkoutProductsCmd.state,
+            builder: (context, state, child) {
+              return switch (state) {
+                IdleCommand() => _checkoutButton(),
+                RunningCommand() => const Center(child: CircularProgressIndicator()),
+                SuccessCommand<Unit, AppError>() => _checkoutButton(),
+                FailureCommand<Unit, AppError>() => _checkoutButton(),
+              };
+            },
+          ),
         ],
       ),
     );
   }
+
+  Widget _checkoutButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: widget.cartViewModel.cartSession.items.isEmpty
+            ? null
+            : () => widget.cartViewModel.checkoutProductsCmd.execute(),
+        child: const Text('Checkout'),
+      ),
+    );
+  }
+
 }
