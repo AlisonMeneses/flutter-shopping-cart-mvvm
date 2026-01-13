@@ -11,8 +11,8 @@ Um projeto de exemplo de carrinho de compras em Flutter para demonstrar uma arqu
 
 1.  **Clone o repositório:**
     ```bash
-    git clone <URL_DO_REPOSITORIO>
-    cd flutter-shopping-cart
+    git clone https://github.com/AlisonMeneses/flutter-shopping-cart-mvvm.git
+    cd flutter_shopping_cart_mvvm
     ```
 
 2.  **Instale as dependências:**
